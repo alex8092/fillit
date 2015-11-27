@@ -3,147 +3,119 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: amerle <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: amerle <amerle@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2015/01/28 07:07:27 by amerle            #+#    #+#              #
-#    Updated: 2015/11/26 19:07:26 by mdelauna         ###   ########.fr        #
+#    Created: 2013/11/19 11:39:05 by amerle            #+#    #+#              #
+#    Updated: 2015/11/27 13:51:30 by mdelauna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 LD = ar
+CFLAGS = -Wall -Wextra -Werror -ggdb3
+LDFLAGS = rcs
+NAME = libft
 
-CFLAGS = -Wall -Wextra -Werror -Iinclude -O2
-
-LDFLAGS = rc
-
-LDFLAGS_TEST = -L. -lft
-
-SRCS = 	src/common/ft_atoi.c \
-		src/common/ft_bzero.c \
-		src/common/ft_findinarray.c \
-		src/common/ft_getnextline.c \
-		src/common/ft_isnum.c \
-		src/common/ft_itoa.c \
-		src/common/ft_memalloc.c \
-		src/common/ft_memcpy.c \
-		src/common/ft_memdup.c \
-		src/common/ft_memset.c \
-		src/common/ft_putchar.c \
-		src/common/ft_putchar_fd.c \
-		src/common/ft_putendl.c \
-		src/common/ft_putendl_fd.c \
-		src/common/ft_putnbr.c \
-		src/common/ft_putnbr_fd.c \
-		src/common/ft_putnendl.c \
-		src/common/ft_putnendl_fd.c \
-		src/common/ft_putnstr.c \
-		src/common/ft_putnstr_fd.c \
-		src/common/ft_putstr.c \
-		src/common/ft_putstr_fd.c \
-		src/common/ft_sort.c \
-		src/common/ft_strchr.c \
-		src/common/ft_strcmp.c \
-		src/common/ft_strcpy.c \
-		src/common/ft_strdup.c \
-		src/common/ft_strjoin.c \
-		src/common/ft_strlen.c \
-		src/common/ft_strncpy.c \
-		src/common/ft_strndup.c \
-		src/common/ft_strnjoin.c \
-		src/common/ft_strsplit.c \
-		src/common/ft_strstr.c \
-		src/common/ft_strsub.c \
-		src/common/ft_wstrlen.c \
-		src/common/ft_tolower.c \
-		src/common/ft_casestrcmp.c \
-		src/printer/ft_printer.c \
-		src/printer/ft_printer_add.c \
-		src/printer/ft_printer_addc.c \
-		src/printer/ft_printer_addn.c \
-		src/printer/ft_printer_adds.c \
-		src/printer/ft_printer_addss.c \
-		src/printer/ft_printer_autoflush.c \
-		src/printer/ft_printer_flush.c \
-		src/printer/ft_printer_flushn.c \
-		src/printer/ft_printer_init.c \
-		src/sstream/ft_sstream_add.c \
-		src/sstream/ft_sstream_addw.c \
-		src/sstream/ft_sstream_addwn.c \
-		src/sstream/ft_sstream_addx.c \
-		src/sstream/ft_sstream_addlx.c \
-		src/sstream/ft_sstream_addllx.c \
-		src/sstream/ft_sstream_addo.c \
-		src/sstream/ft_sstream_addlo.c \
-		src/sstream/ft_sstream_addllo.c \
-		src/sstream/ft_sstream_addc.c \
-		src/sstream/ft_sstream_addi.c \
-		src/sstream/ft_sstream_addl.c \
-		src/sstream/ft_sstream_addll.c \
-		src/sstream/ft_sstream_addn.c \
-		src/sstream/ft_sstream_adds.c \
-		src/sstream/ft_sstream_addui.c \
-		src/sstream/ft_sstream_addul.c \
-		src/sstream/ft_sstream_addull.c \
-		src/sstream/ft_sstream_check_reserve.c \
-		src/sstream/ft_sstream_clear.c \
-		src/sstream/ft_sstream_del.c \
-		src/sstream/ft_sstream_new.c \
-		src/sstream/ft_sstream_reserve.c \
-		src/sstream/ft_sstream_reset_modifiers.c \
-		src/sstream/ft_sstream_count_digits.c \
-		src/sstream/ft_sstream_count_hexa.c \
-		src/sstream/ft_sstream_intern_ui.c \
-		src/sstream/ft_sstream_get_alignement.c \
-		src/sstream/ft_sstream_count_octal.c \
-		src/string/ft_string_app.c \
-		src/string/ft_string_appn.c \
-		src/string/ft_string_appc.c \
-		src/string/ft_string_appwc.c \
-		src/string/ft_string_appwn.c \
-		src/string/ft_string_appw.c \
-		src/string/ft_string_clear.c \
-		src/string/ft_string_cpy.c \
-		src/string/ft_string_del.c \
-		src/string/ft_string_delptr.c \
-		src/string/ft_string_insert.c \
-		src/string/ft_string_insertn.c \
-		src/string/ft_string_new.c \
-		src/string/ft_string_newr.c \
-		src/string/ft_string_news.c \
-		src/string/ft_string_replace.c \
-		src/string/ft_string_replaces.c \
-		src/string/ft_string_reserve.c \
-		src/string/ft_string_search.c \
-		src/string/ft_string_searchc.c \
-		src/string/ft_string_searchs.c \
-		src/string/ft_string_substr.c \
-		src/vector/ft_vector_clear.c \
-		src/vector/ft_vector_clearfree.c \
-		src/vector/ft_vector_del.c \
-		src/vector/ft_vector_delptr.c \
-		src/vector/ft_vector_erase.c \
-		src/vector/ft_vector_new.c \
-		src/vector/ft_vector_newr.c \
-		src/vector/ft_vector_push.c \
-		src/vector/ft_vector_sort.c \
-		src/flagger/ft_flagger_del.c \
-		src/flagger/ft_flagger_new.c \
-		src/flagger/ft_flagger_add.c \
-		src/flagger/ft_flagger_parse.c \
-		src/flagger/ft_flagger_parse_arg.c \
-		src/flagger/ft_flagger_stop.c \
-		src/flagger/ft_flagger_is_active.c
+SRCS = \
+	get_next_line.c \
+	ft_memset.c \
+	ft_bzero.c \
+	ft_memcpy.c \
+	ft_memccpy.c \
+	ft_memmove.c \
+	ft_memchr.c \
+	ft_memcmp.c \
+	ft_strcmp.c \
+	ft_strncmp.c \
+	ft_strlen.c \
+	ft_strdup.c \
+	ft_strcpy.c \
+	ft_strncpy.c \
+	ft_strcat.c \
+	ft_strncat.c \
+	ft_strlcat.c \
+	ft_strchr.c \
+	ft_strrchr.c \
+	ft_strstr.c \
+	ft_strnstr.c \
+	ft_putchar.c \
+	ft_putstr.c \
+	ft_putnbr.c \
+	ft_atoi.c \
+	ft_isalpha.c \
+	ft_isdigit.c \
+	ft_isalnum.c \
+	ft_isascii.c \
+	ft_isprint.c \
+	ft_tolower.c \
+	ft_toupper.c \
+	ft_memalloc.c \
+	ft_memdel.c \
+	ft_strnew.c \
+	ft_strdel.c \
+	ft_strclr.c \
+	ft_striter.c \
+	ft_striteri.c \
+	ft_strmap.c \
+	ft_strmapi.c \
+	ft_strequ.c \
+	ft_strnequ.c \
+	ft_strsub.c \
+	ft_strjoin.c \
+	ft_strtrim.c \
+	ft_strsplit.c \
+	ft_itoa_ccount.c \
+	ft_itoa.c \
+	ft_putendl.c \
+	ft_putchar_fd.c \
+	ft_putstr_fd.c \
+	ft_putendl_fd.c \
+	ft_putnbr_fd.c \
+	ft_putlnbr.c \
+	ft_putulnbr.c \
+	ft_lstnew.c \
+	ft_lstdelone.c \
+	ft_lstdel.c \
+	ft_lstadd.c \
+	ft_lstiter.c \
+	ft_lstmap.c \
+	ft_dlistnew.c \
+	ft_dlistadd.c \
+	ft_dlistlen.c \
+	ft_dlistinsert.c \
+	ft_dlistdel.c \
+	ft_dlistrm.c \
+	ft_printf.c \
+	ft_printf_parse_2.c \
+	ft_printf_parse_flags.c \
+	ft_printf_parse_sublength.c \
+	ft_printf_display.c \
+	ft_putunbr.c \
+	ft_puthex.c \
+	ft_putlhex.c \
+	ft_putdouble.c \
+	ft_isinarray.c \
+	ft_dlistsort.c \
+	ft_dlistswap.c \
+	ft_dlistcpy.c \
+	ft_indexinarray.c \
+	ft_regmatch.c \
+	ft_regmatch_parser.c \
+	ft_reg_create.c \
+	ft_reg_matcher.c \
+	ft_reg_match_rep.c \
+	ft_match_any.c \
+	ft_reg_match_begend.c \
+	ft_reg_isinarray.c \
+	ft_reg_match_sub.c
 
 OBJS = $(SRCS:.c=.o)
-
-NAME = libft.a
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(LD) $(LDFLAGS) $@ $^
-	ranlib $@
+	$(LD) $(LDFLAGS) $(NAME).a $^
+	ranlib $(NAME).a
 
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS)
@@ -152,8 +124,9 @@ clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME).a
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: clean fclean re
+
