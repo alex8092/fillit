@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 18:32:03 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/11/30 19:43:54 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/02 15:12:51 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@ int					ft_read_file(char *file, t_list **l);
 ** search.c
 */
 int					ft_nb_pieces(t_list *list);
-char				**ft_tab_res(int i, t_list *list);
+t_block				**ft_make_array_block(t_list *list);
+t_block				**ft_pick_up(t_block **array);
+t_block				**ft_asm_block(t_block **array);
+char				**ft_try_asm(t_block *array1, t_block *array2, int i, int index);
+char				**ft_try_asm_rev(t_block *array2, t_block *array1, int i, int index);
 
 #endif

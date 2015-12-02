@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 09:10:00 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/11/30 19:52:17 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/02 15:10:53 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,3 +61,119 @@ t_block					**ft_make_array_block(t_list *list)
 	return (array);
 }
 
+t_block					**ft_pick_up(t_block **array)
+{
+	int					index;
+
+	index = 0;
+	while (array[index])
+	{
+		if (array[index]->points[array->n_pts][1] != 0)
+		{
+			array->n_pts = 0;
+			while (array[index]->points[array->n_pts])
+			{
+				array[index]->points[array->n_pts][1] -=1;
+				array->n_pts++;
+			}
+		}
+		index++;
+	}
+	return (array);
+}
+
+t_block					**ft_asm_block(t_block **array)
+{
+	int					index;
+
+	index = 0;
+	while (array[index])
+	{
+		while (array[index]->points[array->n_pts][0]
+			== array[index + i]->points[array->n_pts][0] &&
+			array[index]->points[array->n_pts][1]
+			== array[index + i]->points[array->n_pts][1])
+		{
+			array->n_pts++;
+		}
+		if (array->n_pts > 2)
+		{
+			if (ft_try_asm(array[index], array[index + i], i, index) != NULL)
+			{
+				index++;
+				i = 0;
+			}
+			else
+				i++;
+		}
+	}
+}
+
+char					**ft_try_asm(t_block *array1, t_block *array2, int i, int index)
+{
+	int					x;
+	int					y;
+	char				**tab;
+
+	while (array1->points)
+	{
+		x = array1->points[array->n_pts][0];
+		y = array1->points[array->n_pts][1];
+		tab[x][y] = 41 + index;
+		array->n_pts++;
+	}
+	while (tab[x][y])
+	{
+		if (x < size)
+			x++;
+		else
+			y++;
+	}
+	while (array2->points && x < size)
+	{
+		x += array2->points[array->n_pts][0];
+		y += array2->points[array->n_pts][1];
+		tab[x][y] = 41 + i;
+		array->n_pts++;
+	}
+	if (x > size)
+	{
+		if ((tab = ft_try_asm_rev(array2, array1)) == NULL)
+			return (NULL);
+		else
+			return (tab);
+	}
+	return (tab);
+}
+
+char				**ft_try_asm_rev(t_block *array2, t_block *array1, int i, int index)
+{
+	int					x;
+	int					y;
+	char				**tab;
+
+	while (array2->points)
+	{
+		x = array2->points[array->n_pts][0];
+		y = array2->points[array->n_pts][1];
+		tab[x][y] = 41 + index;
+		array->n_pts++;
+	}
+	while (tab[x][y])
+	{
+		if (x < size)
+			x++;
+		else
+			y++;
+	}
+	while (array1->points && x < size)
+	{
+		x += array1->points[array->n_pts][0];
+		y += array1->points[array->n_pts][1];
+		tab[x][y] = 41 + i;
+		array->n_pts++;
+	}
+	if (x > size)
+		return (NULL);
+	return (tab);
+}
