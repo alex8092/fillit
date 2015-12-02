@@ -6,13 +6,13 @@
 #    By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/10/21 18:35:45 by mdelauna          #+#    #+#              #
-#    Updated: 2015/11/27 14:14:26 by mdelauna         ###   ########.fr        #
+#    Updated: 2015/12/02 16:07:37 by mdelauna         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
 NAME = fillit
 
-SRCS = main.c
+SRCS = main.c search.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 18:31:08 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/11/27 15:57:43 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/02 17:18:51 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ int								ft_read_file(char *file, t_list **l)
 
 int								main(int ac, char **av)
 {
+	t_block						**array;
 	t_list						*list;
 	char						*err;
 
@@ -186,6 +187,9 @@ int								main(int ac, char **av)
 			ft_putstr_fd(err, 2);
 			return (2);
 		}
+		array = ft_make_array_block(list);
+		array = ft_pick_up(array);
+		array = ft_asm_block(array);
 	}
 	return (0);
 }
