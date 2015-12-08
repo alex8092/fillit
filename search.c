@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 09:10:00 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/02 19:26:39 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/08 18:51:32 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,17 +73,34 @@ void		ft_pick_up(void)
 	index = 0;
 	while (array[index])
 	{
-		if (array[index]->points[array[index]->n_pts][1] != 0)
+		array[index]->n_pts = 0;
+		printf("array[index][1] %d\n", array[index]->points[array[index]->n_pts][1]);
+		printf("array[index][0] %d\n", array[index]->points[array[index]->n_pts][0]);
+		if (array[index]->points[array[index]->n_pts][0] != 0)
 		{
 			array[index]->n_pts = 0;
 			while (array[index]->n_pts < 4)
 			{
-				array[index]->points[array[index]->n_pts][1] -=1;
+				array[index]->points[array[index]->n_pts][0] -= 1;
 				array[index]->n_pts++;
 			}
+			printf("index %d\n", index);
 		}
 		index++;
 	}
+	index = 0;
+	while (array[index])
+	{
+		array[index]->n_pts = 0;
+		while (array[index]->n_pts < 4)
+		{
+//			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
+			printf("%d %d\n", array[index]->points[array[index]->n_pts][0], array[index]->points[array[index]->n_pts][1]);
+			array[index]->n_pts++;
+		}
+		index++;
+		printf("\n");
+	}	
 	ft_try_asm(array, 0);
 }
 
@@ -133,25 +150,39 @@ int						ft_try_asm(t_block **array, int index)
 		tab[i][j] = '#';
 		array[index]->n_pts++;
 	}
+	i = 0;
+	j = 0;
+	while (j < size && i < size && tab[i][j] == '#')
+	{
+		printf("tab[i][j] %c\n", tab[i][j]);
+		if (i == size)
+		{
+			i = -1;
+			j++;
+		}
+		i++;
+	}
+	printf("i %d, j %d\n", i, j);
 	array[index + 1]->n_pts = 0;
 	while (array[index + 1]->n_pts < 4 && (index + 1) < ft_get_fillit()->blocks_size)
 	{
 		printf("%d %d %d %c\n", (index + 1), i, j, tab[i][j]);
-		i = array[index + 1]->points[array[index + 1]->n_pts][0];
-		j = array[index + 1]->points[array[index + 1]->n_pts][1];
-		printf("%d")
-		if (tab[i][j] != '#')
+		printf("array[%d][0] %d array[%d][1] %d\n", index, array[index + 1]->points[array[index + 1]->n_pts][0], index, array[index + 1]->points[array[index + 1]->n_pts][1]);
+		i += array[index + 1]->points[array[index + 1]->n_pts][0];
+		j += array[index + 1]->points[array[index + 1]->n_pts][1];
+		printf("%d %d\n", i, j);
+		if ((i < size && j < size) && tab[i][j] != '#')
 		{
 			tab[i][j] = '#';
 			array[index + 1]->n_pts++;
 		}
 		else
-//			break ;
-		{
+			break ;
+/*		{
 			index++;
 			array[index + 1]->n_pts = 0;
 		}
-	}
+*/	}
 
 /*	if (index == ft_get_fillit()->blocks_size)
 	{
