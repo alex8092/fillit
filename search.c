@@ -35,7 +35,7 @@ static void				ft_block_add_point(char c, t_block *pieces, int i, int j)
 	}
 }
 
-t_block					**ft_make_array_block(t_list *list)
+void	ft_make_array_block(t_list *list)
 {
 	t_block				**array;
 	t_block				*item;
@@ -43,7 +43,8 @@ t_block					**ft_make_array_block(t_list *list)
 	int					i;
 	int					j;
 
-	array = (t_block **)malloc(sizeof(t_block *) * ft_nb_pieces(list));
+	ft_get_fillit()->blocks_size = ft_nb_pieces(list);
+	array = (t_block **)malloc(sizeof(t_block *) * (ft_nb_pieces(list) + 1));
 	n = 0;
 	while (list && list->content)
 	{
@@ -58,20 +59,24 @@ t_block					**ft_make_array_block(t_list *list)
 		array[n++] = item;
 		list = list->next;
 	}
-	return (array);
+	array[n] = 0;
+	ft_get_fillit()->blocks = array;
+	//ft_get_fillit()->blocks_size = ft_nb_pieces(list);
 }
 
-t_block					**ft_pick_up(t_block **array)
+void		ft_pick_up(void)
 {
 	int					index;
+	t_block				**array;
 
+	array = ft_get_fillit()->blocks;
 	index = 0;
 	while (array[index])
 	{
 		if (array[index]->points[array[index]->n_pts][1] != 0)
 		{
 			array[index]->n_pts = 0;
-			while (array[index]->points[array[index]->n_pts])
+			while (array[index]->n_pts < 4)
 			{
 				array[index]->points[array[index]->n_pts][1] -=1;
 				array[index]->n_pts++;
@@ -79,15 +84,17 @@ t_block					**ft_pick_up(t_block **array)
 		}
 		index++;
 	}
-	return (array);
+	ft_try_asm(array, 0);
 }
 
-int						ft_found_size_tab(t_block **array)
+int						ft_found_size_tab()
 {
 	int					index;
 	int					blocks;
 	int					size;
+	t_block				**array;
 
+	array = ft_get_fillit()->blocks;
 	index = 0;
 	size = 4;
 	blocks = 0;
@@ -97,4 +104,71 @@ int						ft_found_size_tab(t_block **array)
 	while (size * size < blocks)
 		size++;
 	return (size);
+}
+
+int						ft_try_asm(t_block **array, int index)
+{
+	char				**tab;
+	int					size;
+	int					i;
+	int					j;
+	int					index2;
+
+	size = ft_found_size_tab();
+	i = 0;
+	j = 0;
+	index2 = index;
+	tab = (char **)malloc(sizeof(char *) * size);
+	while (index < size)
+	{
+		tab[index] = (char *)malloc(sizeof(char) * size);
+		++index;
+	}
+	index = index2;
+	array[index]->n_pts = 0;
+	while (array[index]->n_pts < 4)
+	{
+		i = array[index]->points[array[index]->n_pts][0];
+		j = array[index]->points[array[index]->n_pts][1];
+		tab[i][j] = '#';
+		array[index]->n_pts++;
+	}
+	array[index + 1]->n_pts = 0;
+	while (array[index + 1]->n_pts < 4 && (index + 1) < ft_get_fillit()->blocks_size)
+	{
+		printf("%d %d %d %c\n", (index + 1), i, j, tab[i][j]);
+		i = array[index + 1]->points[array[index + 1]->n_pts][0];
+		j = array[index + 1]->points[array[index + 1]->n_pts][1];
+		printf("%d")
+		if (tab[i][j] != '#')
+		{
+			tab[i][j] = '#';
+			array[index + 1]->n_pts++;
+		}
+		else
+//			break ;
+		{
+			index++;
+			array[index + 1]->n_pts = 0;
+		}
+	}
+
+/*	if (index == ft_get_fillit()->blocks_size)
+	{
+		ft_try_asm(array, 1);
+	}
+*/
+	j = 0;
+	while (j < size)
+	{
+		i = 0;
+		while (i < size)
+		{
+			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
+			i++;
+		}
+		printf("\n");
+		j++;
+	}
+	return (0);
 }

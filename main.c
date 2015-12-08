@@ -163,10 +163,10 @@ int								ft_read_file(char *file, t_list **l)
 
 int								main(int ac, char **av)
 {
-	t_block						**array;
 	t_list						*list;
 	char						*err;
 
+	ft_bzero((void *)ft_get_fillit(), sizeof(t_fillit));
 	if (ac < 2)
 	{
 		ft_putstr_fd("Usage: ./fillit <file>\n", 2);
@@ -187,9 +187,10 @@ int								main(int ac, char **av)
 			ft_putstr_fd(err, 2);
 			return (2);
 		}
-		array = ft_make_array_block(list);
-		array = ft_pick_up(array);
-		array = ft_asm_block(array);
+		ft_make_array_block(list);
+		ft_get_fillit()->current_size = ft_found_size_tab();
+		ft_pick_up();
+		//		array = ft_asm_block(array);
 	}
 	return (0);
 }

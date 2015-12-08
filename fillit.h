@@ -33,7 +33,7 @@ typedef struct		s_fillit
 	t_block			**blocks;
 	int				blocks_size;
 	int				current_size;
-}
+}			        t_fillit;
 
 /*
 ** Main.c
@@ -44,13 +44,15 @@ char				*ft_check_tetris(t_list *list);
 int					ft_check_input(t_list *list);
 int					ft_add_tetris(char ***tab, int i, t_list **l, char *line);
 int					ft_read_file(char *file, t_list **l);
+t_fillit			*ft_get_fillit(void);
 
 /*
 ** search.c
 */
 int					ft_nb_pieces(t_list *list);
-t_block				**ft_make_array_block(t_list *list);
-t_block				**ft_pick_up(t_block **array);
-int					ft_found_size_tab(t_block **array);
+void				ft_make_array_block(t_list *list);
+void				ft_pick_up(void);
+int					ft_found_size_tab(void);
+int					ft_try_asm(t_block **array, int index);
 
 #endif

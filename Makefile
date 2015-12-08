@@ -12,7 +12,7 @@
 
 NAME = fillit
 
-SRCS = main.c search.c
+SRCS = main.c search.c fillit.c
 
 OBJS = $(SRCS:.c=.o)
 
