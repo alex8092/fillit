@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 09:10:00 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/08 18:54:17 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/09 16:15:49 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void				ft_block_add_point(char c, t_block *pieces, int i, int j)
 {
 	if (c == '#')
 	{
-		pieces->points[pieces->n_pts][0] = i;
-		pieces->points[pieces->n_pts][1] = j;
+		pieces->points[pieces->n_pts][0] = j;
+		pieces->points[pieces->n_pts][1] = i;
 		pieces->n_pts++;
 	}
 }
@@ -61,7 +61,6 @@ void	ft_make_array_block(t_list *list)
 	}
 	array[n] = 0;
 	ft_get_fillit()->blocks = array;
-	//ft_get_fillit()->blocks_size = ft_nb_pieces(list);
 }
 
 void		ft_pick_up(void)
@@ -74,33 +73,17 @@ void		ft_pick_up(void)
 	while (array[index])
 	{
 		array[index]->n_pts = 0;
-		printf("array[index][1] %d\n", array[index]->points[array[index]->n_pts][1]);
-		printf("array[index][0] %d\n", array[index]->points[array[index]->n_pts][0]);
-		if (array[index]->points[array[index]->n_pts][0] != 0)
+		if (array[index]->points[array[index]->n_pts][1] != 0)
 		{
 			array[index]->n_pts = 0;
 			while (array[index]->n_pts < 4)
 			{
-				array[index]->points[array[index]->n_pts][0] -= 1;
+				array[index]->points[array[index]->n_pts][1] -= 1;
 				array[index]->n_pts++;
 			}
-			printf("index %d\n", index);
 		}
 		index++;
 	}
-	index = 0;
-	while (array[index])
-	{
-		array[index]->n_pts = 0;
-		while (array[index]->n_pts < 4)
-		{
-//			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
-			printf("%d %d\n", array[index]->points[array[index]->n_pts][0], array[index]->points[array[index]->n_pts][1]);
-			array[index]->n_pts++;
-		}
-		index++;
-		printf("\n");
-	}	
 	ft_try_asm(array, 0);
 }
 
@@ -126,22 +109,23 @@ int						ft_found_size_tab()
 int						ft_try_asm(t_block **array, int index)
 {
 	char				**tab;
+	char				**cpy;
 	int					size;
 	int					i;
 	int					j;
-	int					index2;
 
 	size = ft_found_size_tab();
 	i = 0;
 	j = 0;
-	index2 = index;
 	tab = (char **)malloc(sizeof(char *) * size);
+	cpy = (char **)malloc(sizeof(char *) * size);
 	while (index < size)
 	{
 		tab[index] = (char *)malloc(sizeof(char) * size);
+		cpy[index] = (char *)malloc(sizeof(char) * size);
 		++index;
 	}
-	index = index2;
+	index -= 1;
 	array[index]->n_pts = 0;
 	while (array[index]->n_pts < 4)
 	{
@@ -150,11 +134,23 @@ int						ft_try_asm(t_block **array, int index)
 		tab[i][j] = '#';
 		array[index]->n_pts++;
 	}
+	j = 0;
+	while (j < size)
+	{
+		i = 0;
+		while (i < size)
+		{
+			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
+			i++;
+		}
+		printf("\n");
+		j++;
+	}
+	cpy = ft_strcpy_tab(cpy, tab);
 	i = 0;
 	j = 0;
 	while (j < size && i < size && tab[i][j] == '#')
 	{
-		printf("tab[i][j] %c\n", tab[i][j]);
 		if (i == size)
 		{
 			i = -1;
@@ -162,27 +158,25 @@ int						ft_try_asm(t_block **array, int index)
 		}
 		i++;
 	}
-	printf("i %d, j %d\n", i, j);
-	array[index + 1]->n_pts = 0;
-	while (array[index + 1]->n_pts < 4 && (index + 1) < ft_get_fillit()->blocks_size)
+	array[index - 1]->n_pts = 0;
+	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
 	{
-		printf("%d %d %d %c\n", (index + 1), i, j, tab[i][j]);
-		printf("array[%d][0] %d array[%d][1] %d\n", index, array[index + 1]->points[array[index + 1]->n_pts][0], index, array[index + 1]->points[array[index + 1]->n_pts][1]);
-		i += array[index + 1]->points[array[index + 1]->n_pts][0];
-		j += array[index + 1]->points[array[index + 1]->n_pts][1];
-		printf("%d %d\n", i, j);
+		i += array[index - 1]->points[array[index - 1]->n_pts][0];
+		j += array[index - 1]->points[array[index - 1]->n_pts][1];
 		if ((i < size && j < size) && tab[i][j] != '#')
 		{
 			tab[i][j] = '#';
-			array[index + 1]->n_pts++;
+			array[index - 1]->n_pts++;
 		}
 		else
-			break ;
-/*		{
-			index++;
-			array[index + 1]->n_pts = 0;
+		{
+			index--;
+			free(*tab);
+			free(tab);
+			ft_strcpy_tab(tab, cpy);
+			array[index - 1]->n_pts = 0;
 		}
-*/	}
+	}
 
 /*	if (index == ft_get_fillit()->blocks_size)
 	{
@@ -202,4 +196,19 @@ int						ft_try_asm(t_block **array, int index)
 		j++;
 	}
 	return (0);
+}
+
+char				**ft_strcpy_tab(char **dst, char **src)
+{
+	int				i;
+	int				size;
+
+	i = 0;
+	size = ft_found_size_tab();
+	while (i < size)
+	{
+		ft_strcpy(dst[i], src[i]);
+		i++;
+	}
+	return (dst);
 }

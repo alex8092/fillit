@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 18:31:08 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/08 18:54:20 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/09 16:15:48 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char							*ft_check_tetris(t_list *list)
 	int							j;
 	int							count;
 
-	while (list->next && list->content)
+	while (list && list->content)
 	{
 		count = 0;
 		i = -1;
@@ -84,7 +84,7 @@ int								ft_check_input(t_list *list)
 {
 	int							i;
 
-	while (list->next)
+	while (list && list->content)
 	{
 		if (list->content != NULL)
 		{
@@ -144,7 +144,7 @@ int								ft_read_file(char *file, t_list **l)
 	fd = open(file, O_RDONLY);
 	if (fd != -1)
 	{
-		while (get_next_line(fd, &line) > 0)
+		while (get_next_line(fd, &line))
 		{
 			if (!tmp)
 				tmp = (char **)ft_memalloc(sizeof(*tmp) * 4);
@@ -190,7 +190,6 @@ int								main(int ac, char **av)
 		ft_make_array_block(list);
 		ft_get_fillit()->current_size = ft_found_size_tab();
 		ft_pick_up();
-		//		array = ft_asm_block(array);
 	}
 	return (0);
 }

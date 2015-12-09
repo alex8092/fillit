@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 18:32:03 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/08 18:54:30 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/09 16:15:46 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct		s_fillit
 }			        t_fillit;
 
 /*
-** Main.c
+** main.c
 */
 int					ft_check_block(char **block, int i, int j);
 int					ft_check_block_valid(char **block);
@@ -54,5 +54,6 @@ void				ft_make_array_block(t_list *list);
 void				ft_pick_up(void);
 int					ft_found_size_tab(void);
 int					ft_try_asm(t_block **array, int index);
+char				**ft_strcpy_tab(char **dst, char **src);
 
 #endif
