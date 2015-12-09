@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 09:10:00 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/09 16:15:49 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/09 19:55:54 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,8 @@ int						ft_try_asm(t_block **array, int index)
 		cpy[index] = (char *)malloc(sizeof(char) * size);
 		++index;
 	}
-	index -= 1;
+//	index -= 1;
+	index = 0;
 	array[index]->n_pts = 0;
 	while (array[index]->n_pts < 4)
 	{
@@ -158,24 +159,45 @@ int						ft_try_asm(t_block **array, int index)
 		}
 		i++;
 	}
+	index = size;
 	array[index - 1]->n_pts = 0;
 	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
 	{
-		i += array[index - 1]->points[array[index - 1]->n_pts][0];
-		j += array[index - 1]->points[array[index - 1]->n_pts][1];
+		printf("BEFORE -> i : %d, j : %d\n", i, j);
+		if (array[index - 1]->points[array[index - 1]->n_pts][0]
+				== array[index - 1]->points[array[index - 1]->n_pts - 1][0])
+		{
+			i += 0;
+		}
+		else
+		{
+			i += 1;
+//			i += array[index - 1]->points[array[index - 1]->n_pts][0];
+		}
+		if (array[index - 1]->points[array[index - 1]->n_pts][1]
+				== array[index - 1]->points[array[index - 1]->n_pts - 1][1])
+		{
+			j += 0;
+		}
+		else
+		{
+			j += 1;
+//			j += array[index - 1]->points[array[index - 1]->n_pts][1];
+		}
+		printf("AFTER -> i : %d, j : %d\n", i, j);
 		if ((i < size && j < size) && tab[i][j] != '#')
 		{
 			tab[i][j] = '#';
 			array[index - 1]->n_pts++;
 		}
 		else
-		{
+			break ;
+/*		{
 			index--;
 			free(*tab);
 			free(tab);
 			ft_strcpy_tab(tab, cpy);
-			array[index - 1]->n_pts = 0;
-		}
+		}*/
 	}
 
 /*	if (index == ft_get_fillit()->blocks_size)
