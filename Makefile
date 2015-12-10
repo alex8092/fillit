@@ -12,11 +12,11 @@
 
 NAME = fillit
 
-SRCS = main.c search.c fillit.c
+SRCS = main.c search.c fillit.c reader.c checktetris.c presearch.c block.c
 
 OBJS = $(SRCS:.c=.o)
 
-FLAGS = -Wall -Werror -Wextra -g3
+FLAGS = -Wall -Werror -Wextra
 
 LIB = libft/
 
@@ -30,8 +30,8 @@ $(NAME): $(LIB) $(OBJS)
 $(LIB):
 	make -C $(LIB)
 
-%.o: %.c
-	gcc -o $@ -c $^ $(FLAGS)
+%.o: %.c fillit.h
+	gcc -o $@ -c $< $(FLAGS)
 
 clean:
 	$(MAKE) -C $(LIB) clean

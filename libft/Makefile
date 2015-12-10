@@ -12,7 +12,7 @@
 
 CC = gcc
 LD = ar
-CFLAGS = -Wall -Wextra -Werror -ggdb3
+CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = rcs
 NAME = libft
 
