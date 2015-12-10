@@ -1,58 +1,110 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   ft_getnextline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdelauna <mdelauna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amerle <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2013/12/02 10:17:29 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/03/06 11:09:41 by mdelauna         ###   ########.fr       */
+/*   Created: 2014/05/02 05:34:26 by amerle            #+#    #+#             */
+/*   Updated: 2014/05/02 05:37:26 by amerle           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
+#include <stdlib.h>
 
-int		check(char *buffer1)
+static ssize_t	last_ret(int set, ssize_t ret)
 {
-	int			i;
+	static ssize_t	sret = 0;
 
-	i = 0;
-	while (buffer1[i] != '\0')
-	{
-		if (buffer1[i] == '\n')
-		{
-			(buffer1)[i] = '\0';
-			return (0);
-		}
-		i++;
-	}
-	return (1);
+	if (set)
+		sret = ret;
+	return (sret);
 }
 
-int		get_next_line(int const fd, char **line)
+static int		get_line(char **buf, char *find, char **line, size_t *bufsize)
 {
-	static char	*buffer1 = "";
-	char		*buffer2;
-	int			size;
+	const size_t	len = (*buf) ? find - *buf : 0;
 
-	size = BUFF_SIZE;
-	if (size == 0)
-		return (0);
-	while (check(buffer1) && size == BUFF_SIZE)
+	if (*buf && find)
 	{
-		buffer2 = (char *)ft_memalloc(sizeof(char) * (BUFF_SIZE + 1));
-		size = read(fd, buffer2, BUFF_SIZE);
-		if (size == -1)
-			return (-1);
-		buffer1 = ft_strjoin(buffer1, buffer2);
-		free(buffer2);
+		if (len > 0 && *(find - 1) == '\r')
+			*line = ft_strndup(*buf, len - 1);
+		else
+			*line = ft_strndup(*buf, len);
+		if (*bufsize - len != 0 && *(find + 1))
+		{
+			ft_memcpy(*buf, find + 1, *bufsize - len - 1);
+			*bufsize -= len + 1;
+			(*buf)[*bufsize] = 0;
+		}
+		else
+			*bufsize = 0;
+		if (!*bufsize)
+		{
+			free(*buf);
+			*buf = NULL;
+		}
 	}
-	buffer2 = (char *)ft_memalloc(sizeof(char) * (ft_strlen(buffer1) + 1));
-	ft_memcpy(buffer2, buffer1, ft_strlen(buffer1));
-	buffer1 = buffer1 + ft_strlen(buffer2) + 1;
-	*line = ft_strdup(buffer2);
-	free(buffer2);
-	if (size > 1 || (size == 0 && ft_strlen(*line) > 0))
-		return (1);
-	return (size);
+	return ((len || *bufsize || last_ret(0, 0)) ? 1 : 0);
+}
+
+static void		merge(char **buffer, char *buf, ssize_t ret, size_t *bufsize)
+{
+	char	*ptr;
+
+	ptr = *buffer;
+	if (ptr)
+	{
+		*buffer = ft_strnjoin(ptr, *bufsize, buf, ret);
+		free(ptr);
+		*bufsize += ret;
+	}
+	else
+	{
+		*buffer = ft_strndup(buf, ret);
+		*bufsize = ret;
+	}
+}
+
+static char		*ft_find(char *buffer, size_t bufsize)
+{
+	static size_t	offset = 0;
+	char			*find;
+
+	if (buffer && (find = ft_strchr(buffer + offset, '\n')))
+	{
+		offset = 0;
+		return (find);
+	}
+	offset += bufsize - offset;
+	return (NULL);
+}
+
+int				get_next_line(int fd, char **line)
+{
+	static char		*buff = NULL;
+	static size_t	bsize = 0;
+	char			buf[GNL_BUFSIZE + 1];
+	char			*find;
+	ssize_t			ret;
+
+	while (1)
+	{
+		if ((find = ft_find(buff, bsize)))
+			return (get_line(&buff, find, line, &bsize));
+		if ((ret = read(fd, buf, GNL_BUFSIZE)) == 0 && buff)
+		{
+			last_ret(1, 0);
+			return (get_line(&buff, buff + bsize, line, &bsize));
+		}
+		else if (ret > 0)
+		{
+			last_ret(1, ret);
+			buf[ret] = 0;
+			merge(&buff, buf, ret, &bsize);
+		}
+		else
+			return ((!ret) ? 0 : -1);
+	}
 }

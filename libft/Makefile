@@ -52,6 +52,8 @@ SRCS = \
 	ft_memalloc.c \
 	ft_memdel.c \
 	ft_strnew.c \
+	ft_strndup.c \
+	ft_strnjoin.c \
 	ft_strdel.c \
 	ft_strclr.c \
 	ft_striter.c \

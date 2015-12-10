@@ -20,6 +20,8 @@
 #  define NULL	0
 # endif
 
+# define GNL_BUFSIZE	1
+
 enum e_bool { true = 1, false = 0 };
 typedef enum e_bool	t_bool;
 
@@ -72,7 +74,8 @@ int		ft_toupper(int c);
 /* ########################### */
 
 /* Additional functions */
-
+char	*ft_strndup(const char *s, size_t n);
+char	*ft_strnjoin(const char *s1, size_t len1, const char *s2, size_t len2);
 void	ft_putchar(char c);
 void	ft_putstr(char const *str);
 void	ft_putnbr(int number);
