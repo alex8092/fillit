@@ -20,12 +20,16 @@
 # include "libft/libft.h"
 # include "libft/get_next_line.h"
 
+# define N_BLOCKS	4
+
 typedef struct		s_block
 {
 	int				points[4][2];
 	int				n_pts;
 	int				posx;
 	int				posy;
+	int				width;
+	int				height;	
 }					t_block;
 
 typedef struct		s_fillit
@@ -36,26 +40,32 @@ typedef struct		s_fillit
 }			        t_fillit;
 
 /*
-** main.c
+** reader.c
 */
-int					ft_check_block(char **block, int i, int j);
-int					ft_check_block_valid(char **block);
 char				*ft_check_tetris(t_list *list);
 int					ft_check_input(t_list *list);
-int					ft_add_tetris(char ***tab, int i, t_list **l, char *line);
 int					ft_read_file(char *file, t_list **l);
+
+/*
+** fillit.c
+*/
 t_fillit			*ft_get_fillit(void);
+void				ft_make_array_block(t_list *list, int size);
+t_list				*ft_free_list_item(t_list *item);
+
+/*
+** block.c
+*/
+int					ft_block_has_collision(t_block **array, int current);
+
+/*
+** presearch.c
+*/
+void				ft_block_to_top_left(t_block **blocks, int size);
 
 /*
 ** search.c
 */
-int					ft_nb_pieces(t_list *list);
-void				ft_make_array_block(t_list *list);
-void				ft_pick_up(void);
-int					ft_found_size_tab(void);
-int					ft_found_next_coord(t_block **array, int index, int i, int pts);
-void				ft_empty_case(char **tab, int *i, int *j, int size);
-int					ft_try_asm(t_block **array, int index);
-char				**ft_strcpy_tab(char **dst, char **src);
+void				ft_start_search(void);
 
 #endif
