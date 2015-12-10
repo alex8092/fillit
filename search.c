@@ -12,248 +12,84 @@
 
 #include "fillit.h"
 
-int						ft_nb_pieces(t_list *list)
+static int				ft_try_block(t_fillit *fil, int index, int size)
 {
-	int					i;
+	t_block				*current;
 
-	i = 0;
-	while (list && list->content)
-	{
-		i++;
-		list = list->next;
-	}
-	return (i);
-}
-
-static void				ft_block_add_point(char c, t_block *pieces, int i, int j)
-{
-	if (c == '#')
-	{
-		pieces->points[pieces->n_pts][0] = j;
-		pieces->points[pieces->n_pts][1] = i;
-		pieces->n_pts++;
-	}
-}
-
-void	ft_make_array_block(t_list *list)
-{
-	t_block				**array;
-	t_block				*item;
-	int					n;
-	int					i;
-	int					j;
-
-	ft_get_fillit()->blocks_size = ft_nb_pieces(list);
-	array = (t_block **)malloc(sizeof(t_block *) * (ft_nb_pieces(list) + 1));
-	n = 0;
-	while (list && list->content)
-	{
-		item = (t_block *)ft_memalloc(sizeof(t_block));
-		i = -1;
-		while (++i < 4)
-		{
-			j = -1;
-			while (++j < 4)
-				ft_block_add_point(((char **)list->content)[i][j], item, i, j);
-		}
-		array[n++] = item;
-		list = list->next;
-	}
-	array[n] = 0;
-	ft_get_fillit()->blocks = array;
-}
-
-void		ft_pick_up(void)
-{
-	int					index;
-	t_block				**array;
-
-	array = ft_get_fillit()->blocks;
-	index = 0;
-	while (array[index])
-	{
-		array[index]->n_pts = 0;
-		if (array[index]->points[array[index]->n_pts][1] != 0)
-		{
-			array[index]->n_pts = 0;
-			while (array[index]->n_pts < 4)
-			{
-				array[index]->points[array[index]->n_pts][1] -= 1;
-				array[index]->n_pts++;
-			}
-		}
-		index++;
-	}
-	ft_try_asm(array, 0);
-}
-
-int						ft_found_size_tab()
-{
-	int					index;
-	int					blocks;
-	int					size;
-	t_block				**array;
-
-	array = ft_get_fillit()->blocks;
-	index = 0;
-	size = 4;
-	blocks = 0;
-	while (array[index])
-		index++;
-	blocks = index * 4;
-	while (size * size < blocks)
-		size++;
-	return (size);
-}
-
-int						ft_found_next_coord(t_block **array, int index,
-											int i, int pts)
-{
-	if (array[index - 1]->points[pts][i]
-			== array[index - 1]->points[pts - 1][i])
-		return (0);
-	else if (array[index - 1]->points[pts][i]
-			< array[index - 1]->points[pts - 1][i])
-		return (-1);
-	else
+	if (!(index < fil->blocks_size))
 		return (1);
-}
-
-void					ft_empty_case(char **tab, int *i, int *j, int size)
-{
-	*i = 0;
-	*j = 0;
-	while (*j < size && *i < size && ft_isalpha(tab[*i][*j]))
+	current = fil->blocks[index];
+	current->posx = 0;
+	current->posy = 0;
+	while (current->posy + current->height <= size)
 	{
-		if (*i == size - 1)
+		current->posx = 0;
+		while (current->posx + current->width <= size)
 		{
-			*i = -1;
-			(*j)++;
+			if (!ft_block_has_collision(fil->blocks, index))
+			{
+				if (ft_try_block(fil, index + 1, size))
+					return (1);
+			}
+			++current->posx;
 		}
-		(*i)++;
-	}
-}
-
-int						ft_try_asm(t_block **array, int index)
-{
-	char				**tab;
-	char				**cpy;
-	int					size;
-	int					i;
-	int					j;
-
-	size = ft_found_size_tab();
-	i = 0;
-	j = 0;
-	tab = (char **)malloc(sizeof(char *) * size);
-	cpy = (char **)malloc(sizeof(char *) * size);
-	while (index < size)
-	{
-		tab[index] = (char *)malloc(sizeof(char) * size);
-		cpy[index] = (char *)malloc(sizeof(char) * size);
-		++index;
-	}
-//	index -= 1;
-	index = 0;
-	array[index]->n_pts = 0;
-	while (array[index]->n_pts < 4)
-	{
-		i = array[index]->points[array[index]->n_pts][0];
-		j = array[index]->points[array[index]->n_pts][1];
-		tab[i][j] = 'A' + (size - 1 - index);
-		array[index]->n_pts++;
-	}
-	ft_empty_case(tab, &i, &j, size);
-	printf("%d, %d\n", i, j);
-	cpy = ft_strcpy_tab(cpy, tab);
-	index = size;
-	array[index - 1]->n_pts = 0;
-	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
-	{
-		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
-		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
-		if ((i < size && j < size) && !tab[i][j])
-		{
-			tab[i][j] = 'A' + ((size - 1) - (index - 1));
-			array[index - 1]->n_pts++;
-		}
-		else
-			break ;
-/*		{
-			index--;
-			free(*tab);
-			free(tab);
-			ft_strcpy_tab(tab, cpy);
-		}*/
-	}
-
-	ft_empty_case(tab, &i, &j, size);
-	printf("%d, %d\n", i, j);
-	cpy = ft_strcpy_tab(cpy, tab);
-	index = 2;
-	array[index - 1]->n_pts = 0;
-	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
-	{
-		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
-		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
-		if ((i < size && j < size) && !tab[i][j])
-		{
-			tab[i][j] = 'A' + ((size - 1) - (index - 1));
-			array[index - 1]->n_pts++;
-		}
-		else
-			break ;
-	}
-
-	ft_empty_case(tab, &i, &j, size);
-	printf("%d, %d\n", i, j);
-	cpy = ft_strcpy_tab(cpy, tab);
-	index = size - 1;
-	array[index - 1]->n_pts = 0;
-	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
-	{
-		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
-		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
-		if ((i < size && j < size) && !tab[i][j])
-		{
-			tab[i][j] = 'A' + ((size - 1) - (index - 1));
-			array[index - 1]->n_pts++;
-		}
-		else
-			break ;
-	}
-
-/*	if (index == ft_get_fillit()->blocks_size)
-	{
-		ft_try_asm(array, 1);
-	}
-*/
-	j = 0;
-	while (j < size)
-	{
-		i = 0;
-		while (i < size)
-		{
-			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
-			i++;
-		}
-		printf("\n");
-		j++;
+		++current->posy;
 	}
 	return (0);
 }
 
-char				**ft_strcpy_tab(char **dst, char **src)
+static char				ft_get_result_char(t_fillit *fil, int i, int j)
 {
-	int				i;
-	int				size;
+	int					current;
+	int					index;
+	t_block				*bcurrent;
 
-	i = 0;
-	size = ft_found_size_tab();
-	while (i < size)
+	current = 0;
+	while (current < fil->blocks_size)
 	{
-		ft_strcpy(dst[i], src[i]);
-		i++;
+		bcurrent = fil->blocks[current];
+		index = 0;
+		while (index < N_BLOCKS)
+		{
+			if (bcurrent->points[index][0] + bcurrent->posx == i && \
+				bcurrent->points[index][1] + bcurrent->posy == j)
+				return ('A' + current);
+			++index;
+		}
+		++current;
 	}
-	return (dst);
+	return ('.');
+}	
+
+static void				ft_print_result(t_fillit *fil, int size)
+{
+	int					i;
+	int					j;
+	char				c;
+
+	j = -1;
+	while (++j < size)
+	{
+		i = -1;
+		while (++i < size)
+		{
+			c = ft_get_result_char(fil, i, j);
+			write(1, &c, 1);
+		}
+		write(1, "\n", 1);
+	}
+}
+
+void					ft_start_search(void)
+{
+	t_fillit			*fil;
+	const int			blocks_size = ft_get_fillit()->blocks_size;
+	int					current_size;
+
+	fil = ft_get_fillit();
+	ft_block_to_top_left(fil->blocks, blocks_size);
+	current_size = fil->current_size;
+	while (!ft_try_block(fil, 0, current_size))
+		++current_size;
+	ft_print_result(fil, current_size);
 }
