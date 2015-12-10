@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 09:10:00 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/09 19:55:54 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/10 19:17:40 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,34 @@ int						ft_found_size_tab()
 	return (size);
 }
 
+int						ft_found_next_coord(t_block **array, int index,
+											int i, int pts)
+{
+	if (array[index - 1]->points[pts][i]
+			== array[index - 1]->points[pts - 1][i])
+		return (0);
+	else if (array[index - 1]->points[pts][i]
+			< array[index - 1]->points[pts - 1][i])
+		return (-1);
+	else
+		return (1);
+}
+
+void					ft_empty_case(char **tab, int *i, int *j, int size)
+{
+	*i = 0;
+	*j = 0;
+	while (*j < size && *i < size && ft_isalpha(tab[*i][*j]))
+	{
+		if (*i == size - 1)
+		{
+			*i = -1;
+			(*j)++;
+		}
+		(*i)++;
+	}
+}
+
 int						ft_try_asm(t_block **array, int index)
 {
 	char				**tab;
@@ -132,62 +160,21 @@ int						ft_try_asm(t_block **array, int index)
 	{
 		i = array[index]->points[array[index]->n_pts][0];
 		j = array[index]->points[array[index]->n_pts][1];
-		tab[i][j] = '#';
+		tab[i][j] = 'A' + (size - 1 - index);
 		array[index]->n_pts++;
 	}
-	j = 0;
-	while (j < size)
-	{
-		i = 0;
-		while (i < size)
-		{
-			printf("%c ", (tab[i][j]) ? tab[i][j] : '.');
-			i++;
-		}
-		printf("\n");
-		j++;
-	}
+	ft_empty_case(tab, &i, &j, size);
+	printf("%d, %d\n", i, j);
 	cpy = ft_strcpy_tab(cpy, tab);
-	i = 0;
-	j = 0;
-	while (j < size && i < size && tab[i][j] == '#')
-	{
-		if (i == size)
-		{
-			i = -1;
-			j++;
-		}
-		i++;
-	}
 	index = size;
 	array[index - 1]->n_pts = 0;
 	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
 	{
-		printf("BEFORE -> i : %d, j : %d\n", i, j);
-		if (array[index - 1]->points[array[index - 1]->n_pts][0]
-				== array[index - 1]->points[array[index - 1]->n_pts - 1][0])
+		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
+		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
+		if ((i < size && j < size) && !tab[i][j])
 		{
-			i += 0;
-		}
-		else
-		{
-			i += 1;
-//			i += array[index - 1]->points[array[index - 1]->n_pts][0];
-		}
-		if (array[index - 1]->points[array[index - 1]->n_pts][1]
-				== array[index - 1]->points[array[index - 1]->n_pts - 1][1])
-		{
-			j += 0;
-		}
-		else
-		{
-			j += 1;
-//			j += array[index - 1]->points[array[index - 1]->n_pts][1];
-		}
-		printf("AFTER -> i : %d, j : %d\n", i, j);
-		if ((i < size && j < size) && tab[i][j] != '#')
-		{
-			tab[i][j] = '#';
+			tab[i][j] = 'A' + ((size - 1) - (index - 1));
 			array[index - 1]->n_pts++;
 		}
 		else
@@ -198,6 +185,42 @@ int						ft_try_asm(t_block **array, int index)
 			free(tab);
 			ft_strcpy_tab(tab, cpy);
 		}*/
+	}
+
+	ft_empty_case(tab, &i, &j, size);
+	printf("%d, %d\n", i, j);
+	cpy = ft_strcpy_tab(cpy, tab);
+	index = 2;
+	array[index - 1]->n_pts = 0;
+	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
+	{
+		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
+		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
+		if ((i < size && j < size) && !tab[i][j])
+		{
+			tab[i][j] = 'A' + ((size - 1) - (index - 1));
+			array[index - 1]->n_pts++;
+		}
+		else
+			break ;
+	}
+
+	ft_empty_case(tab, &i, &j, size);
+	printf("%d, %d\n", i, j);
+	cpy = ft_strcpy_tab(cpy, tab);
+	index = size - 1;
+	array[index - 1]->n_pts = 0;
+	while (array[index - 1]->n_pts < 4 && (index - 1) < ft_get_fillit()->blocks_size)
+	{
+		i += ft_found_next_coord(array, index, 0, array[index - 1]->n_pts);
+		j += ft_found_next_coord(array, index, 1, array[index - 1]->n_pts);
+		if ((i < size && j < size) && !tab[i][j])
+		{
+			tab[i][j] = 'A' + ((size - 1) - (index - 1));
+			array[index - 1]->n_pts++;
+		}
+		else
+			break ;
 	}
 
 /*	if (index == ft_get_fillit()->blocks_size)

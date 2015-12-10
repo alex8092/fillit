@@ -6,7 +6,7 @@
 /*   By: mdelauna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 18:32:03 by mdelauna          #+#    #+#             */
-/*   Updated: 2015/12/09 19:55:52 by mdelauna         ###   ########.fr       */
+/*   Updated: 2015/12/10 19:17:41 by mdelauna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int					ft_nb_pieces(t_list *list);
 void				ft_make_array_block(t_list *list);
 void				ft_pick_up(void);
 int					ft_found_size_tab(void);
+int					ft_found_next_coord(t_block **array, int index, int i, int pts);
+void				ft_empty_case(char **tab, int *i, int *j, int size);
 int					ft_try_asm(t_block **array, int index);
 char				**ft_strcpy_tab(char **dst, char **src);
 
